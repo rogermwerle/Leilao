@@ -4,30 +4,25 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Adm
- */
 public class conectaDAO {
-    
-    public Connection connectDB(){
-        Connection conn = null;
-        
+
+    public static Connection conectar() {
         try {
-        
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/uc11?user=root&password=");
-            
-        } catch (SQLException erro){
-            JOptionPane.showMessageDialog(null, "Erro ConectaDAO" + erro.getMessage());
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/uc11", "root", "roger85ww");
+            return conn;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Falha ao estabelecer a conexão: " + e.getMessage());
+            return null;
         }
-        return conn;
     }
-    
+
+    public static void encerrar (Connection connection){
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                System.err.println("Falha ao fechar a conexão: " + e.getMessage());
+            }
+        }
+    }
 }
