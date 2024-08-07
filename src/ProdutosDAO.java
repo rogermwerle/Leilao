@@ -58,4 +58,20 @@ public class ProdutosDAO {
         }
     }
 
+    public void venderProduto(int id) {
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        try {
+            Connection conn = conectaDAO.conectar();
+            prep = conn.prepareStatement(sql);
+            prep.setInt(1, id);
+            int verificar = prep.executeUpdate();
+            if (verificar > 0) {
+                JOptionPane.showMessageDialog(null, "Produto com ID " + id + " foi vendido com sucesso.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum produto encontrado com o ID " + id);
+            }
+        } catch (SQLException e) {
+        }
+    }
+
 }
