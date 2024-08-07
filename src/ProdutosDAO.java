@@ -19,6 +19,7 @@ public class ProdutosDAO {
     PreparedStatement prep;
     ResultSet resultset;
     ArrayList<ProdutosDTO> listagem = new ArrayList<>();
+    ArrayList<ProdutosDTO> listagemVendas = new ArrayList<>();
 
     public boolean cadastrarProduto(ProdutosDTO produto) {
         try {
@@ -58,4 +59,40 @@ public class ProdutosDAO {
         }
     }
 
+    public void venderProduto(int id) {
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        try {
+            Connection conn = conectaDAO.conectar();
+            prep = conn.prepareStatement(sql);
+            prep.setInt(1, id);
+            int verificar = prep.executeUpdate();
+            if (verificar > 0) {
+                JOptionPane.showMessageDialog(null, "Produto com ID " + id + " foi vendido com sucesso.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum produto encontrado com o ID " + id);
+            }
+        } catch (SQLException e) {
+        }
+    }
+
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        String sql = "SELECT * FROM produtos WHERE status = 'Vendido'";
+        try {
+            Connection conn = conectaDAO.conectar();
+            prep = conn.prepareStatement(sql);
+            resultset = prep.executeQuery();
+            while (resultset.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(resultset.getInt("id"));
+                produto.setNome(resultset.getString("nome"));
+                produto.setValor(resultset.getInt("valor"));
+                produto.setStatus(resultset.getString("status"));
+                listagemVendas.add(produto);
+            }
+            conectaDAO.encerrar(conn);
+            return listagemVendas;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
 }
