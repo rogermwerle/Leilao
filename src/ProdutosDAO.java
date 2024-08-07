@@ -20,7 +20,7 @@ public class ProdutosDAO {
     ResultSet resultset;
     ArrayList<ProdutosDTO> listagem = new ArrayList<>();
 
-    public void cadastrarProduto(ProdutosDTO produto) {
+    public boolean cadastrarProduto(ProdutosDTO produto) {
         try {
             Connection conn = conectaDAO.conectar();
             String sql = "INSERT INTO produtos (nome, valor, status) VALUES  (?,?,?)";
@@ -28,10 +28,12 @@ public class ProdutosDAO {
             prep.setString(1, produto.getNome());
             prep.setInt(2, produto.getValor());
             prep.setString(3, produto.getStatus());
-            prep.executeUpdate();
+            int verificar = prep.executeUpdate();
             conectaDAO.encerrar(conn);
+            return verificar > 0;
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro inserindo : " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -49,6 +51,7 @@ public class ProdutosDAO {
                 produto.setStatus(resultset.getString("status"));
                 listagem.add(produto);
             }
+            conectaDAO.encerrar(conn);
             return listagem;
         } catch (SQLException e) {
             return null;
